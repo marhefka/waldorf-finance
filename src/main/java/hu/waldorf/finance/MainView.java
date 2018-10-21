@@ -5,7 +5,10 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ErrorLevel;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,13 @@ public class MainView extends VerticalLayout {
         Binder<FamilyDTO> binder = new Binder<>();
         binder
                 .forField(tamogato)
-//                .asRequired()
+                .withValidator((Validator<String>) (value, context) -> {
+                    if (value == null || value.trim().isEmpty()) {
+                        return ValidationResult.create("Töltse ki a mezőt.", ErrorLevel.ERROR);
+                    }
+
+                    return ValidationResult.ok();
+                })
                 .bind(FamilyDTO::getSupporter, FamilyDTO::setSupporter);
 
         binder
