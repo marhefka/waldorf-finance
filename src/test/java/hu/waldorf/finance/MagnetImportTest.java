@@ -26,7 +26,7 @@ import java.util.Date;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ErsteImportTest {
+public class MagnetImportTest {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
@@ -35,7 +35,7 @@ public class ErsteImportTest {
 
     @Test
     public void hello() throws Exception {
-        String fileName = "Erste10.xml";
+        String fileName = "haviKivonat_201809_1620010611564492.xml";
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(fileName).getFile());
 
@@ -47,10 +47,10 @@ public class ErsteImportTest {
 
         XPathFactory xPathfactory = XPathFactory.newInstance();
 
-        XPathExpression expr = xPathfactory.newXPath().compile("//Worksheet[@Name='11994002-02405425-00000000']//Row[position()>1]");
+        XPathExpression expr = xPathfactory.newXPath().compile("//Tranzakcio");
         NodeList nodeList = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd.");
 
         Date now = new Date();
 
@@ -58,34 +58,65 @@ public class ErsteImportTest {
         TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
         for (int i = 0; i < nodeList.getLength(); i++) {
+            boolean feldolgozando = true;
             Node row = nodeList.item(i);
 
-            XPathExpression expr2 = xPathfactory.newXPath().compile("Cell");
-            NodeList nodeList2 = (NodeList) expr2.evaluate(row, XPathConstants.NODESET);
+            Befizetes befizetes = new Befizetes();
+            befizetes.setImportIdopont(now);
+            befizetes.setFeldolgozva(false);
 
-            String konyvelesDatuma = nodeList2.item(1).getTextContent();
-            String partnerNeve = nodeList2.item(4).getTextContent().trim();
-            String partnerSzamlaszama = nodeList2.item(5).getTextContent().trim();
-            int osszeg = Integer.parseInt(nodeList2.item(6).getTextContent().trim());
-            String terhelesVagyJovairas = nodeList2.item(7).getTextContent().trim();
-            String kozlemeny = nodeList2.item(9).getTextContent().trim();
+            NodeList childNodes = row.getChildNodes();
+            for (int j = 0; j < childNodes.getLength(); j++) {
+                Node childNode = childNodes.item(j);
+                if (childNode.getNodeType() != Node.ELEMENT_NODE) {
+                    continue;
+                }
 
-            if (!terhelesVagyJovairas.equals("J")) {
-                continue;
+                String value = childNode.getTextContent();
+                switch (childNode.getNodeName()) {
+                    case "Tranzakcioszam":
+                        befizetes.setImportForras("Magnet/" + fileName + "/" + value);
+                        break;
+                    case "Ellenpartner":
+                        befizetes.setBefizetoNev(value);
+                        break;
+                    case "Ellenszamla":
+                        befizetes.setBefizetoSzamlaszam(value);
+                        break;
+                    case "Osszeg":// devizanem check
+                        double d = Double.parseDouble(value);
+                        if (d <= 0.0) {
+                            feldolgozando = false;
+                            break;
+                        }
+
+                        int osszeg = (int) d;
+
+                        if (d-osszeg >= 0.01) {
+                            throw new RuntimeException("Filler ertek?: " + value);
+                        }
+
+                        befizetes.setOsszeg(osszeg);
+                        break;
+                    case "Kozlemeny":
+                        befizetes.setKozlemeny(value);
+                        break;
+                    case "Terhelesnap":
+                        befizetes.setKonyvelesiNap(simpleDateFormat.parse(value));
+                        break;
+                    case "Tipus":
+                        if (!value.equals("Átutalás (IG2)")) {
+                            feldolgozando = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
 
-            Date dKonyvelesDatuma = simpleDateFormat.parse(konyvelesDatuma);
-
-            Befizetes befizetes = new Befizetes();
-            befizetes.setImportForras("Erste/" + fileName);
-            befizetes.setImportIdopont(now);
-            befizetes.setKonyvelesiNap(dKonyvelesDatuma);
-            befizetes.setBefizetoNev(partnerNeve);
-            befizetes.setBefizetoSzamlaszam(partnerSzamlaszama);
-            befizetes.setOsszeg(osszeg);
-            befizetes.setKozlemeny(kozlemeny);
-            befizetes.setFeldolgozva(false);
-            befizetesRepository.save(befizetes);
+            if (feldolgozando) {
+                befizetesRepository.save(befizetes);
+            }
         }
 
         transactionManager.commit(transactionStatus);
