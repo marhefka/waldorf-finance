@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -28,10 +27,7 @@ import java.util.stream.Stream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class FirstImportTest {
-    @Autowired
-    private ResourceLoader resourceLoader;
-
+public class SzerzodesImportTest {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
@@ -82,6 +78,7 @@ public class FirstImportTest {
             }
         }
 
+        csaladRepository.save(new Csalad());
         transactionManager.commit(transactionStatus);
     }
 
@@ -180,6 +177,9 @@ public class FirstImportTest {
                 }
 
             }
+
+
+            System.out.println();
         }
 
 
