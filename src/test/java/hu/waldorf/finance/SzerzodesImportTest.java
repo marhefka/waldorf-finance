@@ -78,7 +78,6 @@ public class SzerzodesImportTest {
             }
         }
 
-        csaladRepository.save(new Csalad());
         transactionManager.commit(transactionStatus);
     }
 
