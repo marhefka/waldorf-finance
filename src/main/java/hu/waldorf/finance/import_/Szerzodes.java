@@ -15,8 +15,8 @@ public class Szerzodes {
     @Column(name = "ID")
     private long id;
 
-    @Column(name = "TAMOGATO_NEVE")
-    private String tamogatoNeve;
+    @Column(name = "TAMOGATO")
+    private String tamogato;
 
     @Column(name = "MUKODESI_KOLTSEG_TAMOGAS")
     private int mukodesiKoltsegTamogatas;
@@ -44,12 +44,12 @@ public class Szerzodes {
         this.id = id;
     }
 
-    public String getTamogatoNeve() {
-        return tamogatoNeve;
+    public String getTamogato() {
+        return tamogato;
     }
 
-    public void setTamogatoNeve(String tamogatoNeve) {
-        this.tamogatoNeve = tamogatoNeve;
+    public void setTamogato(String tamogato) {
+        this.tamogato = tamogato;
     }
 
     public int getMukodesiKoltsegTamogatas() {

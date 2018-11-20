@@ -183,7 +183,7 @@ public class SzerzodesImportTest {
 
 
         Szerzodes szerzodes = new Szerzodes();
-        szerzodes.setTamogatoNeve(tamogatoNeve);
+        szerzodes.setTamogato(tamogatoNeve);
         szerzodes.setMukodesiKoltsegTamogatas(mukodesiKoltsegTamogatas);
         szerzodes.setEpitesiHozzajarulas(epitesiHozzajarulas);
         szerzodes.setCsaladId(csaladId);
