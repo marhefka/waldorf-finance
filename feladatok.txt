@@ -1,0 +1,18 @@
+2. Banki utalasi adatok betoltese
+
+3. Atutalt penzek szetosztasa
+
+4. Havi egyenleg keszitese
+
+
+5. Egyenlegek lekerdezese
+
+--------------------------------------------
+r
+DONE 1. Tamogatoi szerzodesek betoltese
+
+    Csalad
+    Diak
+    Szerzodes
+
+
