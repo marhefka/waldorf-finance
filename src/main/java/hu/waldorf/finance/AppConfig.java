@@ -1,4 +1,4 @@
-package hu.waldorf.finance.app;
+package hu.waldorf.finance;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;

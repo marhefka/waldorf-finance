@@ -1,6 +1,5 @@
-package hu.waldorf.finance.app;
+package hu.waldorf.finance;
 
-import hu.waldorf.finance.service.JovairasService;
 import hu.waldorf.finance.model.Befizetes;
 import hu.waldorf.finance.model.BefizetesRepository;
 import hu.waldorf.finance.model.Diak;
@@ -8,10 +7,12 @@ import hu.waldorf.finance.model.DiakRepository;
 import hu.waldorf.finance.model.Szerzodes;
 import hu.waldorf.finance.model.SzerzodesRepository;
 import hu.waldorf.finance.model.TetelTipus;
+import hu.waldorf.finance.service.JovairasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -23,6 +24,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 @SpringBootApplication
+@ComponentScan("hu.waldorf.finance")
 public class FinanceApplication implements CommandLineRunner {
     private static final Locale locale = Locale.forLanguageTag("hu-HU");
 
@@ -72,6 +74,29 @@ public class FinanceApplication implements CommandLineRunner {
                     jovairBefizetest(szerzodesId, lastCharacter, befizetes.getId());
                     continue;
                 } catch (NumberFormatException e) {
+                }
+            }
+
+            if (utasitas.toLowerCase().startsWith("t") && utasitas.length() == 7) {
+                String sEv = utasitas.substring(1, 5);
+                String sHonap = utasitas.substring(5, 7);
+
+                try {
+                    int ev = Integer.parseInt(sEv);
+                    int honap = Integer.parseInt(sHonap);
+
+                    if (ev < 2018 && ev > 2019) {
+                        throw new NumberFormatException();
+                    }
+
+                    if (honap < 1 && honap > 12) {
+                        throw new NumberFormatException();
+                    }
+
+                    jovairasService.terhel(ev, honap);
+                    continue;
+                } catch (NumberFormatException ex) {
+                    System.out.println("Ervenytelen t parancs. Pelda: t201809");
                 }
             }
 
@@ -147,6 +172,7 @@ public class FinanceApplication implements CommandLineRunner {
         System.out.println("Segitseg");
         System.out.println("34é: jovairas a 34-es tamogatoi szerzodeshez, epitesi hozzajarulashoz");
         System.out.println("34m: jovairas a 34-es tamogatoi szerzodeshez, mukodesi tamogatashoz");
+        System.out.println("t201809: 2018. 09. honap terhelesek");
         System.out.println("h: tetel jovairasanak kesobbre halasztasa");
         System.out.println("f: befizetest figyelmen kivul hagy");
         System.out.println("?: segitseg megjelenitese");

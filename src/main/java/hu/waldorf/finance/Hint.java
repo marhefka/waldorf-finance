@@ -1,4 +1,4 @@
-package hu.waldorf.finance.app;
+package hu.waldorf.finance;
 
 import hu.waldorf.finance.model.Befizetes;
 import hu.waldorf.finance.model.Diak;
