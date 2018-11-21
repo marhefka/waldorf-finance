@@ -1,4 +1,4 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 

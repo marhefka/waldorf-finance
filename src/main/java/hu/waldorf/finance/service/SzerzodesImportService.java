@@ -1,5 +1,11 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.service;
 
+import hu.waldorf.finance.model.Csalad;
+import hu.waldorf.finance.model.CsaladRepository;
+import hu.waldorf.finance.model.Diak;
+import hu.waldorf.finance.model.DiakRepository;
+import hu.waldorf.finance.model.Szerzodes;
+import hu.waldorf.finance.model.SzerzodesRepository;
 import org.apache.commons.io.Charsets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

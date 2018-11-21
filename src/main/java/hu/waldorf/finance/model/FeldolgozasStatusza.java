@@ -1,4 +1,4 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.model;
 
 public enum FeldolgozasStatusza {
     BEIMPORTALVA,

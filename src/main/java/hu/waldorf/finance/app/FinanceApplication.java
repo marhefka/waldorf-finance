@@ -1,13 +1,13 @@
-package hu.waldorf.finance;
+package hu.waldorf.finance.app;
 
-import hu.waldorf.finance.import_.Befizetes;
-import hu.waldorf.finance.import_.BefizetesRepository;
-import hu.waldorf.finance.import_.Diak;
-import hu.waldorf.finance.import_.DiakRepository;
-import hu.waldorf.finance.import_.JovairasService;
-import hu.waldorf.finance.import_.Szerzodes;
-import hu.waldorf.finance.import_.SzerzodesRepository;
-import hu.waldorf.finance.import_.TetelTipus;
+import hu.waldorf.finance.service.JovairasService;
+import hu.waldorf.finance.model.Befizetes;
+import hu.waldorf.finance.model.BefizetesRepository;
+import hu.waldorf.finance.model.Diak;
+import hu.waldorf.finance.model.DiakRepository;
+import hu.waldorf.finance.model.Szerzodes;
+import hu.waldorf.finance.model.SzerzodesRepository;
+import hu.waldorf.finance.model.TetelTipus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

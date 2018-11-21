@@ -1,4 +1,4 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.model;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

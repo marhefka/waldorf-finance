@@ -1,4 +1,4 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

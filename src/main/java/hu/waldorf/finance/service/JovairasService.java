@@ -1,5 +1,11 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.service;
 
+import hu.waldorf.finance.model.Befizetes;
+import hu.waldorf.finance.model.BefizetesRepository;
+import hu.waldorf.finance.model.EgyenlegTetelRepository;
+import hu.waldorf.finance.model.FeldolgozasStatusza;
+import hu.waldorf.finance.model.Jovairas;
+import hu.waldorf.finance.model.TetelTipus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

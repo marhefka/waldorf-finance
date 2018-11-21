@@ -1,5 +1,8 @@
-package hu.waldorf.finance.import_;
+package hu.waldorf.finance.service;
 
+import hu.waldorf.finance.model.Befizetes;
+import hu.waldorf.finance.model.BefizetesRepository;
+import hu.waldorf.finance.model.FeldolgozasStatusza;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;

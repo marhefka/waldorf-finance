@@ -1,8 +1,8 @@
-package hu.waldorf.finance;
+package hu.waldorf.finance.app;
 
-import hu.waldorf.finance.import_.Befizetes;
-import hu.waldorf.finance.import_.Diak;
-import hu.waldorf.finance.import_.Szerzodes;
+import hu.waldorf.finance.model.Befizetes;
+import hu.waldorf.finance.model.Diak;
+import hu.waldorf.finance.model.Szerzodes;
 
 import java.util.List;
 import java.util.Locale;

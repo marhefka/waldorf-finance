@@ -1,9 +1,9 @@
 package hu.waldorf.finance;
 
-import hu.waldorf.finance.import_.DbDeleteService;
-import hu.waldorf.finance.import_.ErsteImportService;
-import hu.waldorf.finance.import_.MagnetImportService;
-import hu.waldorf.finance.import_.SzerzodesImportService;
+import hu.waldorf.finance.service.DbDeleteService;
+import hu.waldorf.finance.service.ErsteImportService;
+import hu.waldorf.finance.service.MagnetImportService;
+import hu.waldorf.finance.service.SzerzodesImportService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
