@@ -34,7 +34,7 @@ public class Jovairas {
     private int osszeg;
 
     @Column(name = "BEFIZETES_ID")
-    private long befizetesId;
+    private Long befizetesId;
 
     @Column(name = "KONYVELESI_NAP")
     @Temporal(TemporalType.DATE)
@@ -79,7 +79,7 @@ public class Jovairas {
         return befizetesId;
     }
 
-    public void setBefizetesId(long befizetesId) {
+    public void setBefizetesId(Long befizetesId) {
         this.befizetesId = befizetesId;
     }
 
