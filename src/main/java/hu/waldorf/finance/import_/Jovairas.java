@@ -13,8 +13,8 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "EGYENLEG_TETEL")
-public class EgyenlegTetel {
+@Table(name = "JOVAIRAS")
+public class Jovairas {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -30,7 +30,7 @@ public class EgyenlegTetel {
     @Enumerated(EnumType.STRING)
     private TetelTipus tipus;
 
-    @Column(name = "TERHELES_OSSZEG")
+    @Column(name = "OSSZEG")
     private int osszeg;
 
     @Column(name = "BEFIZETES_ID")
@@ -40,7 +40,7 @@ public class EgyenlegTetel {
     @Temporal(TemporalType.DATE)
     private Date konyvelesiNap;
 
-    public EgyenlegTetel() {
+    public Jovairas() {
     }
 
     public long getId() {

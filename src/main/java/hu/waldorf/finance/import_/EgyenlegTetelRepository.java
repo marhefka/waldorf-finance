@@ -7,5 +7,5 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
-public interface EgyenlegTetelRepository extends JpaRepository<EgyenlegTetel, Long> {
+public interface EgyenlegTetelRepository extends JpaRepository<Jovairas, Long> {
 }

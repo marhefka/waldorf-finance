@@ -34,14 +34,14 @@ public class JovairasService {
         befizetes.setStatusz(FeldolgozasStatusza.KESZ);
         befizetesRepository.save(befizetes);
 
-        EgyenlegTetel egyenlegTetel = new EgyenlegTetel();
-        egyenlegTetel.setSzerzodesId(szerzodesId);
-        egyenlegTetel.setMegnevezes("Befizetés jóváírása");
-        egyenlegTetel.setTipus(tipus);
-        egyenlegTetel.setOsszeg(befizetes.getOsszeg());
-        egyenlegTetel.setBefizetesId(befizetesId);
-        egyenlegTetel.setKonyvelesiNap(befizetes.getKonyvelesiNap());
-        egyenlegRepository.save(egyenlegTetel);
+        Jovairas jovairas = new Jovairas();
+        jovairas.setSzerzodesId(szerzodesId);
+        jovairas.setMegnevezes("Befizetés jóváírása");
+        jovairas.setTipus(tipus);
+        jovairas.setOsszeg(befizetes.getOsszeg());
+        jovairas.setBefizetesId(befizetesId);
+        jovairas.setKonyvelesiNap(befizetes.getKonyvelesiNap());
+        egyenlegRepository.save(jovairas);
     }
 
 }
