@@ -1,5 +1,7 @@
 package hu.waldorf.finance.import_;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -120,5 +122,20 @@ public class Befizetes {
 
     public void setStatusz(FeldolgozasStatusza statusz) {
         this.statusz = statusz;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("importForras", importForras)
+                .append("importIdopont", importIdopont)
+                .append("konyvelesiNap", konyvelesiNap)
+                .append("befizetoNev", befizetoNev)
+                .append("befizetoSzamlaszam", befizetoSzamlaszam)
+                .append("osszeg", osszeg)
+                .append("kozlemeny", kozlemeny)
+                .append("statusz", statusz)
+                .toString();
     }
 }
