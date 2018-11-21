@@ -4,8 +4,11 @@ import hu.waldorf.finance.model.Csalad;
 import hu.waldorf.finance.model.CsaladRepository;
 import hu.waldorf.finance.model.Diak;
 import hu.waldorf.finance.model.DiakRepository;
+import hu.waldorf.finance.model.Jovairas;
+import hu.waldorf.finance.model.JovairasRepository;
 import hu.waldorf.finance.model.Szerzodes;
 import hu.waldorf.finance.model.SzerzodesRepository;
+import hu.waldorf.finance.model.TetelTipus;
 import org.apache.commons.io.Charsets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,15 +37,14 @@ public class SzerzodesImportService {
     @Autowired
     private SzerzodesRepository szerzodesRepository;
 
+    @Autowired
+    private JovairasRepository jovairasRepository;
+
     private Set<Integer> csaladok = new HashSet<>();
 
     public void importSzerzodesek(File file) throws Exception {
         Stream<String> lines = Files.lines(file.toPath(), Charsets.UTF_8);
         List<String> lines2 = lines.collect(Collectors.toList());
-
-        szerzodesRepository.deleteAll();
-        diakRepository.deleteAll();
-        csaladRepository.deleteAll();
 
         boolean firstLine = true;
         for (String s : lines2) {
@@ -150,15 +155,9 @@ public class SzerzodesImportService {
                     continue;
                 } else {
                     throw new RuntimeException("Egy csaladban levo gyerekeket kulon-kulon tamogato fizet.");
-//                    Diak diak = new Diak();
-//                    diak.setNev(gyerekekNeve[i]);
-//                    diak.setOsztaly(gyerekekEvfolyama[i]);
-//                    diak.setCsaladId(csaladId);
-//                    diakRepository.save(diak);
                 }
             }
         }
-
 
         Szerzodes szerzodes = new Szerzodes();
         szerzodes.setTamogato(tamogatoNeve);
@@ -168,6 +167,27 @@ public class SzerzodesImportService {
         szerzodes.setMukodesiKoltsegTamogatasInduloEgyenleg(mukodesiTamogatasNyitoEgyenleg);
         szerzodes.setEpitesiHozzajarulasInduloEgyenleg(epitesiHozzajarulasNyitoEgyenleg);
         szerzodesRepository.save(szerzodes);
+
+        LocalDate date2018Sept1 = LocalDate.of(2018, 9, 1);
+        Date date = Date.from(date2018Sept1.atStartOfDay().toInstant(ZoneOffset.UTC));
+
+        Jovairas jovairas = new Jovairas();
+        jovairas.setSzerzodesId(szerzodes.getId());
+        jovairas.setMegnevezes("2018. szeptember 1-jei működési támogatás számla nyitóegyenlege");
+        jovairas.setTipus(TetelTipus.MUKODESI);
+        jovairas.setOsszeg(mukodesiTamogatasNyitoEgyenleg);
+        jovairas.setBefizetesId(null);
+        jovairas.setKonyvelesiNap(date);
+        jovairasRepository.save(jovairas);
+
+        Jovairas jovairas2 = new Jovairas();
+        jovairas2.setSzerzodesId(szerzodes.getId());
+        jovairas2.setMegnevezes("2018. szeptember 1-jei építési hozzájárulási számla nyitóegyenlege");
+        jovairas2.setTipus(TetelTipus.EPITESI);
+        jovairas2.setOsszeg(epitesiHozzajarulasNyitoEgyenleg);
+        jovairas2.setBefizetesId(null);
+        jovairas2.setKonyvelesiNap(date);
+        jovairasRepository.save(jovairas2);
     }
 
 }

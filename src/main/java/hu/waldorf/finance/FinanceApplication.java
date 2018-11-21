@@ -146,7 +146,7 @@ public class FinanceApplication implements CommandLineRunner {
     }
 
     private String readCommand() {
-        System.out.println("> ");
+        System.out.print("> ");
 
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();

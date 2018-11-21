@@ -3,7 +3,7 @@ package hu.waldorf.finance.service;
 import hu.waldorf.finance.model.BefizetesRepository;
 import hu.waldorf.finance.model.CsaladRepository;
 import hu.waldorf.finance.model.DiakRepository;
-import hu.waldorf.finance.model.EgyenlegTetelRepository;
+import hu.waldorf.finance.model.JovairasRepository;
 import hu.waldorf.finance.model.SzerzodesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,24 +17,24 @@ public class DbDeleteService {
     private final SzerzodesRepository szerzodesRepository;
     private final DiakRepository diakRepository;
     private final CsaladRepository csaladRepository;
-    private final EgyenlegTetelRepository egyenlegTetelRepository;
+    private final JovairasRepository jovairasRepository;
 
     @Autowired
     public DbDeleteService(BefizetesRepository befizetesRepository,
                            SzerzodesRepository szerzodesRepository,
                            DiakRepository diakRepository,
                            CsaladRepository csaladRepository,
-                           EgyenlegTetelRepository egyenlegTetelRepository) {
+                           JovairasRepository jovairasRepository) {
 
         this.befizetesRepository = befizetesRepository;
         this.szerzodesRepository = szerzodesRepository;
         this.diakRepository = diakRepository;
         this.csaladRepository = csaladRepository;
-        this.egyenlegTetelRepository = egyenlegTetelRepository;
+        this.jovairasRepository = jovairasRepository;
     }
 
     public void deleteDb() {
-        egyenlegTetelRepository.deleteAll();
+        jovairasRepository.deleteAll();
         befizetesRepository.deleteAll();
         szerzodesRepository.deleteAll();
         diakRepository.deleteAll();
