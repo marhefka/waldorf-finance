@@ -1,12 +1,16 @@
-3. Atutalt penzek szetosztasa
+- Havi terhelesek
+- Havi egyenleg keszitese
 
-4. Havi egyenleg keszitese
+MAJD
 
+- elhalasztott befizetesek utolagos szetosztasa
+- szeptemberi erste pdf beimportalasa
+- El. Eszter + ment-e el mas szeptemberben-oktoberben, jott-e mas esetleg meg ev kozben?
 
 5. Egyenlegek lekerdezese
 
 --------------------------------------------
-r
+
 DONE 1. Tamogatoi szerzodesek betoltese
 
     Csalad
@@ -19,3 +23,4 @@ DONE 2. Banki utalasi adatok betoltese
     - Erste
     - Magnet
 
+DONE 3. Atutalt penzek szetosztasa
