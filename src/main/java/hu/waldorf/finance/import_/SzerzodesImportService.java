@@ -1,22 +1,10 @@
-package hu.waldorf.finance;
+package hu.waldorf.finance.import_;
 
-import hu.waldorf.finance.import_.Csalad;
-import hu.waldorf.finance.import_.CsaladRepository;
-import hu.waldorf.finance.import_.Diak;
-import hu.waldorf.finance.import_.DiakRepository;
-import hu.waldorf.finance.import_.Szerzodes;
-import hu.waldorf.finance.import_.SzerzodesRepository;
 import org.apache.commons.io.Charsets;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.HashSet;
@@ -25,12 +13,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class SzerzodesImportTest {
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
+@Service
+@Transactional
+public class SzerzodesImportService {
     @Autowired
     private CsaladRepository csaladRepository;
 
@@ -42,16 +27,9 @@ public class SzerzodesImportTest {
 
     private Set<Integer> csaladok = new HashSet<>();
 
-    @Test
-    public void hello() throws Exception {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("tamogatok.csv").getFile());
-
+    public void importSzerzodesek(File file) throws Exception {
         Stream<String> lines = Files.lines(file.toPath(), Charsets.UTF_8);
         List<String> lines2 = lines.collect(Collectors.toList());
-
-        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
         szerzodesRepository.deleteAll();
         diakRepository.deleteAll();
@@ -77,8 +55,6 @@ public class SzerzodesImportTest {
                 return;
             }
         }
-
-        transactionManager.commit(transactionStatus);
     }
 
     private void processLine(String s) {
@@ -174,11 +150,7 @@ public class SzerzodesImportTest {
 //                    diak.setCsaladId(csaladId);
 //                    diakRepository.save(diak);
                 }
-
             }
-
-
-            System.out.println();
         }
 
 

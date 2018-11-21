@@ -1,20 +1,12 @@
-package hu.waldorf.finance;
+package hu.waldorf.finance.import_;
 
-import hu.waldorf.finance.import_.Befizetes;
-import hu.waldorf.finance.import_.BefizetesRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathConstants;
@@ -24,21 +16,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ErsteImportTest {
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
+@Service
+@Transactional
+public class ErsteImportService {
     @Autowired
     private BefizetesRepository befizetesRepository;
 
-    @Test
-    public void hello() throws Exception {
-        String fileName = "Erste10.xml";
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(fileName).getFile());
-
+    public void importErsteDataFile(File file, String szamlaszam) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         factory.setIgnoringElementContentWhitespace(true);
@@ -47,15 +31,12 @@ public class ErsteImportTest {
 
         XPathFactory xPathfactory = XPathFactory.newInstance();
 
-        XPathExpression expr = xPathfactory.newXPath().compile("//Worksheet[@Name='11994002-02405425-00000000']//Row[position()>1]");
+        XPathExpression expr = xPathfactory.newXPath().compile("//Worksheet[@Name='"+ szamlaszam +"']//Row[position()>1]");
         NodeList nodeList = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Date now = new Date();
-
-        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
-        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node row = nodeList.item(i);
@@ -77,18 +58,15 @@ public class ErsteImportTest {
             Date dKonyvelesDatuma = simpleDateFormat.parse(konyvelesDatuma);
 
             Befizetes befizetes = new Befizetes();
-            befizetes.setImportForras("Erste/" + fileName);
+            befizetes.setImportForras("Erste/" + file.getName());
             befizetes.setImportIdopont(now);
             befizetes.setKonyvelesiNap(dKonyvelesDatuma);
             befizetes.setBefizetoNev(partnerNeve);
             befizetes.setBefizetoSzamlaszam(partnerSzamlaszama);
             befizetes.setOsszeg(osszeg);
             befizetes.setKozlemeny(kozlemeny);
-            befizetes.setFeldolgozva(false);
+            befizetes.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
             befizetesRepository.save(befizetes);
         }
-
-        transactionManager.commit(transactionStatus);
     }
-
 }

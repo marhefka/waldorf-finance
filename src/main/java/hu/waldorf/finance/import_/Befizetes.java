@@ -2,6 +2,8 @@ package hu.waldorf.finance.import_;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,8 +43,9 @@ public class Befizetes {
     @Column(name = "KOZLEMENY")
     private String kozlemeny;
 
-    @Column(name = "FELDOLGOZVA")
-    private boolean feldolgozva;
+    @Column(name = "STATUSZ")
+    @Enumerated(EnumType.STRING)
+    private FeldolgozasStatusza statusz;
 
     public Befizetes() {
     }
@@ -111,11 +114,11 @@ public class Befizetes {
         this.kozlemeny = kozlemeny;
     }
 
-    public boolean isFeldolgozva() {
-        return feldolgozva;
+    public FeldolgozasStatusza getStatusz() {
+        return statusz;
     }
 
-    public void setFeldolgozva(boolean feldolgozva) {
-        this.feldolgozva = feldolgozva;
+    public void setStatusz(FeldolgozasStatusza statusz) {
+        this.statusz = statusz;
     }
 }

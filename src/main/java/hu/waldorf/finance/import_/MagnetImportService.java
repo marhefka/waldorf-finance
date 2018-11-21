@@ -1,12 +1,7 @@
-package hu.waldorf.finance;
+package hu.waldorf.finance.import_;
 
-import hu.waldorf.finance.import_.Befizetes;
-import hu.waldorf.finance.import_.BefizetesRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -15,6 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathConstants;
@@ -24,21 +20,16 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class MagnetImportTest {
+@Service
+@Transactional
+public class MagnetImportService {
     @Autowired
     private PlatformTransactionManager transactionManager;
 
     @Autowired
     private BefizetesRepository befizetesRepository;
 
-    @Test
-    public void hello() throws Exception {
-        String fileName = "haviKivonat_201809_1620010611564492.xml";
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(fileName).getFile());
-
+    public void importMagnetDataFile(File file) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         factory.setIgnoringElementContentWhitespace(true);
@@ -63,7 +54,7 @@ public class MagnetImportTest {
 
             Befizetes befizetes = new Befizetes();
             befizetes.setImportIdopont(now);
-            befizetes.setFeldolgozva(false);
+            befizetes.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
 
             NodeList childNodes = row.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
@@ -75,7 +66,7 @@ public class MagnetImportTest {
                 String value = childNode.getTextContent();
                 switch (childNode.getNodeName()) {
                     case "Tranzakcioszam":
-                        befizetes.setImportForras("Magnet/" + fileName + "/" + value);
+                        befizetes.setImportForras("Magnet/" + file.getName() + "/" + value);
                         break;
                     case "Ellenpartner":
                         befizetes.setBefizetoNev(value);
