@@ -2,77 +2,163 @@ package hu.waldorf.finance;
 
 import hu.waldorf.finance.import_.Befizetes;
 import hu.waldorf.finance.import_.BefizetesRepository;
-import hu.waldorf.finance.import_.FeldolgozasStatusza;
+import hu.waldorf.finance.import_.Diak;
+import hu.waldorf.finance.import_.DiakRepository;
+import hu.waldorf.finance.import_.JovairasService;
+import hu.waldorf.finance.import_.Szerzodes;
+import hu.waldorf.finance.import_.SzerzodesRepository;
+import hu.waldorf.finance.import_.TetelTipus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 @SpringBootApplication
 public class FinanceApplication implements CommandLineRunner {
-	@Autowired
-	private BefizetesRepository befizetesRepository;
+    private static final Locale locale = Locale.forLanguageTag("hu-HU");
 
-	public static void main(String[] args) {
-		SpringApplication.run(FinanceApplication.class, args);
-	}
+    @Autowired
+    private BefizetesRepository befizetesRepository;
+    @Autowired
+    private SzerzodesRepository szerzodesRepository;
+    @Autowired
+    private DiakRepository diakRepository;
+    @Autowired
+    private JovairasService jovairasService;
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
-	@Override
-	public void run(String... args) {
-		feldolgozo();
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FinanceApplication.class, args);
+    }
 
-	public void feldolgozo() {
-		while (true) {
-			List<Befizetes> befizetesek = befizetesRepository.findNemFeldolgozottak();
-			System.out.println("Feldolgozandó befizetések: " + befizetesek.size());
-			System.out.println();
+    @Override
+    public void run(String... args) {
+        feldolgozo();
+    }
 
-			if (befizetesek.isEmpty()) {
-				System.out.println("KÉSZ!");
-				return;
-			}
+    public void feldolgozo() {
+        while (true) {
+            List<Befizetes> befizetesek = befizetesRepository.findNemFeldolgozottak();
+            System.out.println("Feldolgozandó befizetések: " + befizetesek.size());
+            System.out.println();
 
-			Befizetes befizetes = befizetesek.get(0);
-			print(befizetes);
+            if (befizetesek.isEmpty()) {
+                System.out.println("KÉSZ!");
+                return;
+            }
 
-			System.out.println("> ");
+            Befizetes befizetes = befizetesek.get(0);
+            print(befizetes);
+            printHints(befizetes);
 
-			Scanner scanner = new Scanner(System.in);
-			String utasitas = scanner.nextLine();
+            String utasitas = readCommand();
 
-			switch (utasitas.toLowerCase()) {
-				case "f":
-					ignoreBefizetes(befizetes);
-					break;
-				case "?":
-					printHelp();
-					break;
-				default:
-					System.out.println("Ismeretlen parancs. Használd a ?-t az utasítások megtekintéséhez.");
-			}
-		}
-	}
+            char lastCharacter = utasitas.toLowerCase(locale).charAt(utasitas.length() - 1);
 
-	private void ignoreBefizetes(Befizetes befizetes) {
-		befizetes.setStatusz(FeldolgozasStatusza.FIGYELMEN_KIVUL_HAGYVA);
-		befizetesRepository.save(befizetes);
-	}
+            if (lastCharacter == 'é' || lastCharacter == 'm') {
+                String sSzerzodesId = utasitas.substring(0, utasitas.length() - 1);
+                try {
+                    int szerzodesId = Integer.parseInt(sSzerzodesId);
+                    jovairBefizetest(szerzodesId, lastCharacter, befizetes.getId());
+                    continue;
+                } catch (NumberFormatException e) {
+                }
+            }
 
-	private void printHelp() {
-		System.out.println("Segitseg");
-		System.out.println("?: segitseg megjelenitese");
-	}
+            switch (utasitas.toLowerCase()) {
+                case "h":
+                    jovairasService.postponeBefizetes(befizetes.getId());
+                    break;
+                case "f":
+                    jovairasService.ignoreBefizetes(befizetes.getId());
+                    break;
+                case "?":
+                    printHelp();
+                    break;
+                default:
+                    System.out.println("Ismeretlen parancs. Használd a ?-t az utasítások megtekintéséhez.");
+            }
+        }
+    }
 
-	private void print(Befizetes befizetes) {
-		System.out.println("Forrás: " + befizetes.getImportForras());
-		System.out.println("Beeérkezes időpontja: " + befizetes.getKonyvelesiNap());
-		System.out.println("Befizető: " + befizetes.getBefizetoNev() + " (" + befizetes.getBefizetoSzamlaszam() + ")");
-		System.out.println("Összeg: " + befizetes.getOsszeg());
-		System.out.println("Közlemény: " + befizetes.getKozlemeny());
-		System.out.println();
-	}
+    private void printHints(Befizetes befizetes) {
+        List<Hint> hints = new ArrayList<>();
+
+        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
+        List<Szerzodes> szerzodesek = szerzodesRepository.findAll();
+
+        for (Szerzodes szerzodes : szerzodesek) {
+            long csaladId = szerzodes.getCsaladId();
+            List<Diak> diakok = diakRepository.findByCsaladId(csaladId);
+            Hint hint = new Hint(diakok, szerzodes);
+            hint.calculateConfidencePoint(befizetes);
+            if (hint.getConfidencePoint() > 0) {
+                hints.add(hint);
+            }
+        }
+
+        transactionManager.rollback(transactionStatus);
+
+        hints.sort((o1, o2) -> o2.getConfidencePoint() - o1.getConfidencePoint());
+
+        int i = 0;
+        while (i < hints.size() && i < 10) {
+            System.out.println(hints.get(i).format());
+            i++;
+        }
+    }
+
+    private String readCommand() {
+        System.out.println("> ");
+
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+    private void jovairBefizetest(int szerzodesId, char tipus, long befizetesId) {
+        TetelTipus tetelTipus;
+        switch (tipus) {
+            case 'é':
+                tetelTipus = TetelTipus.EPITESI;
+                break;
+            case 'm':
+                tetelTipus = TetelTipus.MUKODESI;
+                break;
+            default:
+                throw new IllegalStateException("" + tipus);
+        }
+
+        jovairasService.jovairBefizetest(szerzodesId, tetelTipus, befizetesId);
+    }
+
+    private void printHelp() {
+        System.out.println("Segitseg");
+        System.out.println("34é: jovairas a 34-es tamogatoi szerzodeshez, epitesi hozzajarulashoz");
+        System.out.println("34m: jovairas a 34-es tamogatoi szerzodeshez, mukodesi tamogatashoz");
+        System.out.println("h: tetel jovairasanak kesobbre halasztasa");
+        System.out.println("f: befizetest figyelmen kivul hagy");
+        System.out.println("?: segitseg megjelenitese");
+        System.out.println();
+    }
+
+    private void print(Befizetes befizetes) {
+        System.out.println("Forrás: " + befizetes.getImportForras());
+        System.out.println("Beeérkezes időpontja: " + befizetes.getKonyvelesiNap());
+        System.out.println("Befizető: " + befizetes.getBefizetoNev() + " (" + befizetes.getBefizetoSzamlaszam() + ")");
+        System.out.println("Összeg: " + befizetes.getOsszeg());
+        System.out.println("Közlemény: " + befizetes.getKozlemeny());
+        System.out.println();
+    }
 }

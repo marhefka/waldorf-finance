@@ -2,6 +2,8 @@ package hu.waldorf.finance.import_;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,7 +13,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "BEFIZETESEK")
+@Table(name = "EGYENLEG_TETEL")
 public class EgyenlegTetel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,10 @@ public class EgyenlegTetel {
 
     @Column(name = "MEGNEVEZES")
     private String megnevezes;
+
+    @Column(name = "tipus")
+    @Enumerated(EnumType.STRING)
+    private TetelTipus tipus;
 
     @Column(name = "TERHELES_OSSZEG")
     private int osszeg;
@@ -83,5 +89,13 @@ public class EgyenlegTetel {
 
     public void setKonyvelesiNap(Date konyvelesiNap) {
         this.konyvelesiNap = konyvelesiNap;
+    }
+
+    public TetelTipus getTipus() {
+        return tipus;
+    }
+
+    public void setTipus(TetelTipus tipus) {
+        this.tipus = tipus;
     }
 }

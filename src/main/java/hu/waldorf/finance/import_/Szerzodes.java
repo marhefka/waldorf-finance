@@ -25,7 +25,7 @@ public class Szerzodes {
     private int epitesiHozzajarulas;
 
     @Column(name = "CSALAD_ID")
-    private int csaladId;
+    private long csaladId;
 
     @Column(name = "MUKODESI_KOLTSEG_TAMOGAS_INDULO_EGYENLEG")
     private int mukodesiKoltsegTamogatasInduloEgyenleg;
@@ -68,11 +68,11 @@ public class Szerzodes {
         this.epitesiHozzajarulas = epitesiHozzajarulas;
     }
 
-    public int getCsaladId() {
+    public long getCsaladId() {
         return csaladId;
     }
 
-    public void setCsaladId(int csaladId) {
+    public void setCsaladId(long csaladId) {
         this.csaladId = csaladId;
     }
 

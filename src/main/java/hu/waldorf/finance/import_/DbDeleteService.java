@@ -12,20 +12,24 @@ public class DbDeleteService {
     private final SzerzodesRepository szerzodesRepository;
     private final DiakRepository diakRepository;
     private final CsaladRepository csaladRepository;
+    private final EgyenlegTetelRepository egyenlegTetelRepository;
 
     @Autowired
     public DbDeleteService(BefizetesRepository befizetesRepository,
                            SzerzodesRepository szerzodesRepository,
                            DiakRepository diakRepository,
-                           CsaladRepository csaladRepository) {
+                           CsaladRepository csaladRepository,
+                           EgyenlegTetelRepository egyenlegTetelRepository) {
 
         this.befizetesRepository = befizetesRepository;
         this.szerzodesRepository = szerzodesRepository;
         this.diakRepository = diakRepository;
         this.csaladRepository = csaladRepository;
+        this.egyenlegTetelRepository = egyenlegTetelRepository;
     }
 
     public void deleteDb() {
+        egyenlegTetelRepository.deleteAll();
         befizetesRepository.deleteAll();
         szerzodesRepository.deleteAll();
         diakRepository.deleteAll();
