@@ -9,12 +9,12 @@ import hu.waldorf.finance.model.JovairasRepository;
 import hu.waldorf.finance.model.Szerzodes;
 import hu.waldorf.finance.model.SzerzodesRepository;
 import hu.waldorf.finance.model.TetelTipus;
-import org.apache.commons.io.Charsets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -43,7 +43,7 @@ public class SzerzodesImportService {
     private Set<Integer> csaladok = new HashSet<>();
 
     public void importSzerzodesek(File file) throws Exception {
-        Stream<String> lines = Files.lines(file.toPath(), Charsets.UTF_8);
+        Stream<String> lines = Files.lines(file.toPath(), StandardCharsets.UTF_8);
         List<String> lines2 = lines.collect(Collectors.toList());
 
         boolean firstLine = true;
