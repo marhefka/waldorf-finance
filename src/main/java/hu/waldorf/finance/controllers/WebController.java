@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 
@@ -29,33 +30,36 @@ public class WebController {
     }
 
     @RequestMapping("/processImport")
-    public String processImport(
+    public ModelAndView processImport(
             @RequestParam("file") MultipartFile file,
             @RequestParam("type") String type
     ) throws Exception{
         if(file==null){
-            // TODO error handling
+            return new ModelAndView("redirect:/import?error=file:required");
         }
 
         switch (type){
             case "1":
-                importErste(file);
+                String error = importErste(file);
+                if(error!=null){
+                    return new ModelAndView("redirect:/import?error=file:"+error);
+                }
                 break;
             case "2":
                 importMagnet(file);
                 break;
             default:
-                // TODO error handling
+                return new ModelAndView("redirect:/import?error=type:invalid");
         }
 
-        return "redirect:import";
+        return new ModelAndView("redirect:/import");
     }
 
     private void importMagnet(MultipartFile file) {
 
     }
 
-    private void importErste(MultipartFile file) throws Exception {
+    private String importErste(MultipartFile file) throws Exception {
         if(file.getOriginalFilename().endsWith(".xml")){
             // TODO: send the MultipartFile to the service, and then convert to file there if needed
             File convFile = new File(file.getOriginalFilename());
@@ -66,7 +70,9 @@ public class WebController {
             pdfImportService.importErsteDataFile(file, "???");
         }
         else{
-            // TODO error handling
+            return "invalidext";
         }
+
+        return null;
     }
 }
