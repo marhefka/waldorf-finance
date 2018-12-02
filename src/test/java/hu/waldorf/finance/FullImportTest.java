@@ -1,7 +1,7 @@
 package hu.waldorf.finance;
 
 import hu.waldorf.finance.service.DbDeleteService;
-import hu.waldorf.finance.service.ErsteImportService;
+import hu.waldorf.finance.service.ErsteXMLImportService;
 import hu.waldorf.finance.service.MagnetImportService;
 import hu.waldorf.finance.service.SzerzodesImportService;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public class FullImportTest {
     private SzerzodesImportService szerzodesImportService;
 
     @Autowired
-    private ErsteImportService ersteImportService;
+    private ErsteXMLImportService ersteImportService;
 
     @Autowired
     private MagnetImportService magnetImportService;

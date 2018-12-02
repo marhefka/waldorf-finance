@@ -21,7 +21,7 @@ import java.util.Date;
 
 @Service
 @Transactional
-public class ErsteImportService {
+public class ErsteXMLImportService {
     @Autowired
     private BefizetesRepository befizetesRepository;
 
