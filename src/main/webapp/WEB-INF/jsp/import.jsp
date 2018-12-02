@@ -11,12 +11,12 @@
             <div class="container">
                 <h2>Import</h2>
 
-                <form method="POST" action="/upload" enctype="multipart/form-data">
+                <form method="POST" action="/processImport" enctype="multipart/form-data">
                     <div class="input-group mb-3 form-group">
                         <div class="input-group-prepend">
-                            <label class="input-group-text" for="inputGroupSelect01">Típus</label>
+                            <label class="input-group-text" for="type">Típus</label>
                         </div>
-                        <select class="custom-select" id="inputGroupSelect01">
+                        <select class="custom-select" id="type" name="type">
                             <option selected>Kérlek, válassz...</option>
                             <option value="1">Erste</option>
                             <option value="2">Magnet</option>

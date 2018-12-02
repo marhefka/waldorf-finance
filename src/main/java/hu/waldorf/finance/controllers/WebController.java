@@ -20,7 +20,7 @@ public class WebController {
         return "import";
     }
 
-    @RequestMapping("/upload")
+    @RequestMapping("/processImport")
     public String processImport(@RequestParam("file") MultipartFile file) throws Exception{
         PDDocument document = PDDocument.load(file.getBytes());
         PDFTextStripper pdfStripper = new PDFTextStripper();
