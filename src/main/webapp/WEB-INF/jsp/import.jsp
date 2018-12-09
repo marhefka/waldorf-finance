@@ -37,6 +37,7 @@
                         </div>
                         <div class="invalid-feedback">
                             <div id="file-invalidext" class="field-error">Csak .pdf és .xml file-ok tölthetőek fel</div>
+                            <div id="file-invalidpdf" class="field-error">Hibás PDF file</div>
                         </div>
                     </div>
                     <div class="input-group form-group">

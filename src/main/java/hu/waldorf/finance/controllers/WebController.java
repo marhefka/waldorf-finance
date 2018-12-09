@@ -67,7 +67,7 @@ public class WebController {
             xmlImportService.importErsteDataFile(convFile,"???");
         }
         else if(file.getOriginalFilename().endsWith(".pdf")){
-            pdfImportService.importErsteDataFile(file);
+            return pdfImportService.importErsteDataFile(file);
         }
         else{
             return "invalidext";
