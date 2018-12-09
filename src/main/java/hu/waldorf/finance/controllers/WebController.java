@@ -3,6 +3,7 @@ package hu.waldorf.finance.controllers;
 
 import hu.waldorf.finance.service.ErstePDFImportService;
 import hu.waldorf.finance.service.ErsteXMLImportService;
+import hu.waldorf.finance.service.ImportResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,39 +41,37 @@ public class WebController {
 
         switch (type){
             case "1":
-                String error = importErste(file);
-                if(error!=null){
-                    return new ModelAndView("redirect:/import?error=file:"+error);
+                ImportResult result= importErste(file);
+                if(!result.success()){
+                    return new ModelAndView("redirect:/import?error=file:"+result.getError());
                 }
-                break;
+                // TODO: numofresultot success eseten kiirni
+                return new ModelAndView("redirect:/import?success&rows="+result.getNumImported());
             case "2":
                 importMagnet(file);
-                break;
+                return new ModelAndView("redirect:/import?success"); // TODO
             default:
                 return new ModelAndView("redirect:/import?error=type:invalid");
         }
-
-        return new ModelAndView("redirect:/import");
     }
 
     private void importMagnet(MultipartFile file) {
 
     }
 
-    private String importErste(MultipartFile file) throws Exception {
+    private ImportResult importErste(MultipartFile file) throws Exception {
         if(file.getOriginalFilename().endsWith(".xml")){
             // TODO: send the MultipartFile to the service, and then convert to file there if needed
             File convFile = new File(file.getOriginalFilename());
             file.transferTo(convFile);
             xmlImportService.importErsteDataFile(convFile,"???");
+            return ImportResult.error("TODO");
         }
         else if(file.getOriginalFilename().endsWith(".pdf")){
             return pdfImportService.importErsteDataFile(file);
         }
         else{
-            return "invalidext";
+            return ImportResult.error("invalidext");
         }
-
-        return null;
     }
 }

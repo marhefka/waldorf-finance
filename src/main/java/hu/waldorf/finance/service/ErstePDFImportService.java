@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Service
@@ -37,7 +37,7 @@ public class ErstePDFImportService {
     @Autowired
     private BefizetesRepository befizetesRepository;
 
-    public String importErsteDataFile(MultipartFile file) throws Exception {
+    public ImportResult importErsteDataFile(MultipartFile file) throws Exception {
         PDDocument document = PDDocument.load(file.getBytes());
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text=pdfStripper.getText(document);
@@ -55,100 +55,48 @@ public class ErstePDFImportService {
         }
 
         if(startLine==0){
-            return "invalidpdf";
+            return ImportResult.error("invalidpdf");
         }
 
         String[] toBeParsed=Arrays.copyOfRange(lines, startLine-1,lines.length);
         List<Befizetes> befizetesek=process(toBeParsed, file.getOriginalFilename());
-        //befizetesek.forEach(befizetes -> befizetesRepository.save(befizetes));
-        return null;
+        befizetesek.forEach(befizetes -> befizetesRepository.save(befizetes));
+        return ImportResult.success(befizetesek.size());
     }
-
-    private enum ProcessStage {START, HEADINGS_PARSING, CONTENT_PARSING_STARTED, CONTENT_PARSING}
 
     private List<Befizetes> process(String[] toBeParsed, String originalFilename) throws ParseException {
         List<Befizetes> parsed=new ArrayList<>();
-        List<Befizetes> befizetesBuffer=new ArrayList<>();
-        ProcessStage stage=ProcessStage.START;
 
-
-
-        int contentIndex=0;
+        Befizetes befizetesBeingParsed=null;
 
         for (String line : toBeParsed) {
-            if(line.matches(STARTS_WITH_DATE_REGEX)){ // new heading stack starts
-                if(stage==ProcessStage.CONTENT_PARSING){ // content is parsed for the prev headings/content, new heading blocks coming
-                    parsed.addAll(befizetesBuffer);
-                    befizetesBuffer.clear();
-                    contentIndex=0;
+            if(line.startsWith("Megbízó neve")) {
+                if(befizetesBeingParsed!=null){
+                    parsed.add(befizetesBeingParsed);
                 }
 
-                stage=ProcessStage.HEADINGS_PARSING;
-                Befizetes befizetesBasic = getBefizetesBasicFromHeading(line, originalFilename);
-                befizetesBuffer.add(befizetesBasic);
+                befizetesBeingParsed=new Befizetes();
+                befizetesBeingParsed.setImportForras("Erste/" + originalFilename);
+                befizetesBeingParsed.setImportIdopont(new Date());
+                befizetesBeingParsed.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
+                befizetesBeingParsed.setBefizetoNev(line.replace("Megbízó neve","").trim());
             }
-            else if(isContentComingIndicatorLine(line)) { // heading ends, info for the headings coming
-                if(stage==ProcessStage.CONTENT_PARSING){ // a new content block starting
-                    contentIndex++;
-                }
-                stage=ProcessStage.CONTENT_PARSING_STARTED;
+            else if(line.startsWith("Megbízó számlaszáma")){
+                Objects.requireNonNull(befizetesBeingParsed).setBefizetoSzamlaszam(line.replace("Megbízó számlaszáma","").trim());
             }
-            else {
-                Befizetes befizetes=befizetesBuffer.get(contentIndex);
-                if(line.startsWith("Megbízó számlaszáma")){
-                    befizetes.setBefizetoSzamlaszam(line.replace("Megbízó számlaszáma","").trim());
-                }
-                else if(line.startsWith("Közlemény")){
-                    befizetes.setKozlemeny(line.replace("Közlemény","").trim());
-                }
-
-                stage=ProcessStage.CONTENT_PARSING;
+            else if(line.startsWith("Könyvelés dátuma")){
+                Objects.requireNonNull(befizetesBeingParsed).setKonyvelesiNap(SIMPLE_DATE_FORMAT.parse(line.replace("Könyvelés dátuma","").trim()));
+            }
+            else if(line.startsWith("Közlemény")){
+                Objects.requireNonNull(befizetesBeingParsed).setKozlemeny(line.replace("Közlemény","").trim());
+            }
+            else if(line.startsWith("Jóváírás összege")){
+                String moneyString=line.replace("Jóváírás összege","").replace("HUF","").replace(",",".").replace(" ","").trim();
+                int osszeg=Float.valueOf(moneyString).intValue();
+                Objects.requireNonNull(befizetesBeingParsed).setOsszeg(osszeg);
             }
         }
 
         return parsed;
-    }
-
-    private boolean isContentComingIndicatorLine(String line){
-        for (String contentComingIndicatorLine : CONTENT_COMING_INDICATOR_LINES) {
-            if(line.startsWith(contentComingIndicatorLine)){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private Befizetes getBefizetesBasicFromHeading(String line, String originalFilename) throws ParseException {
-        // heading is like: 2018.09.03. JOHN DOE 33 000,00 HUF
-        Matcher dateMatcher=DATE_REGEX_PATTERN.matcher(line);
-        if(!dateMatcher.find()){
-            throw new RuntimeException("Invalid heading line (no date available): "+line);
-        }
-
-        String date=dateMatcher.group(0);
-        String nameAndMoney=line.replace(date,"").trim();
-
-        Matcher nameMatcher=NAME_REGEX_PATTERN.matcher(nameAndMoney);
-        if(!nameMatcher.find()){
-            throw new RuntimeException("Invalid heading line (no name available): "+line);
-        }
-
-        String name=nameMatcher.group(0).trim();
-        String moneyString=nameAndMoney.replace(name,"").replace("HUF","").replace(",",".").replace(" ","").trim();
-        int osszeg=Float.valueOf(moneyString).intValue();
-
-        Date now = new Date();
-        Befizetes befizetes = new Befizetes();
-        befizetes.setImportForras("Erste/" + originalFilename);
-        befizetes.setImportIdopont(now);
-        befizetes.setKonyvelesiNap(SIMPLE_DATE_FORMAT.parse(date));
-        befizetes.setBefizetoNev(name);
-        befizetes.setBefizetoSzamlaszam("?"); // will be updated on-demand
-        befizetes.setOsszeg(osszeg);
-        befizetes.setKozlemeny("?"); // will be updated on-demand
-        befizetes.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
-
-        return befizetes;
     }
 }
