@@ -4,22 +4,23 @@ public class ImportResult {
     private String error;
     private int numImported;
 
-    private ImportResult(){}
+    private ImportResult() {
+    }
 
-    public static ImportResult success(int numImported){
-        ImportResult thiz=new ImportResult();
-        thiz.numImported=numImported;
+    public static ImportResult success(int numImported) {
+        ImportResult thiz = new ImportResult();
+        thiz.numImported = numImported;
         return thiz;
     }
 
-    public static ImportResult error(String error){
-        ImportResult thiz=new ImportResult();
-        thiz.error=error;
+    public static ImportResult error(String error) {
+        ImportResult thiz = new ImportResult();
+        thiz.error = error;
         return thiz;
     }
 
-    public boolean success(){
-        return error==null;
+    public boolean success() {
+        return error == null;
     }
 
     public String getError() {

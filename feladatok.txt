@@ -1,10 +1,9 @@
-- Havi terhelesek
+- szeptemberi erste pdf beimportalasa
 - Havi egyenleg keszitese
 
 MAJD
 
 - elhalasztott befizetesek utolagos szetosztasa
-- szeptemberi erste pdf beimportalasa
 - El. Eszter + ment-e el mas szeptemberben-oktoberben, jott-e mas esetleg meg ev kozben?
 
 5. Egyenlegek lekerdezese
@@ -19,8 +18,12 @@ DONE 1. Tamogatoi szerzodesek betoltese
 
 
 DONE 2. Banki utalasi adatok betoltese
-
+2
     - Erste
     - Magnet
 
 DONE 3. Atutalt penzek szetosztasa
+DONE 4. Havi terhelesek
+---
+
+

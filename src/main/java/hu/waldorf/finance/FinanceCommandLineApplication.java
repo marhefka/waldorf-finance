@@ -1,6 +1,6 @@
 package hu.waldorf.finance;
 
-public class FinanceCommandLineApplication{
+public class FinanceCommandLineApplication {
 
 }
 

@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @Transactional
 public class JovairasService {
-    private static final String[] honapok = new String[] {"január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"};
+    private static final String[] honapok = new String[]{"január", "február", "március", "április", "május", "június", "július", "augusztus", "szeptember", "október", "november", "december"};
 
     private final BefizetesRepository befizetesRepository;
     private final JovairasRepository jovairasRepository;

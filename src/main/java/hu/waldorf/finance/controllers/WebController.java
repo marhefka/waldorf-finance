@@ -21,12 +21,12 @@ public class WebController {
     private ErsteXMLImportService xmlImportService;
 
     @RequestMapping("/")
-    public String indexPage(){
+    public String indexPage() {
         return "index";
     }
 
     @RequestMapping("/import")
-    public String importPage(){
+    public String importPage() {
         return "import";
     }
 
@@ -34,19 +34,19 @@ public class WebController {
     public ModelAndView processImport(
             @RequestParam("file") MultipartFile file,
             @RequestParam("type") String type
-    ) throws Exception{
-        if(file==null){
+    ) throws Exception {
+        if (file == null) {
             return new ModelAndView("redirect:/import?error=file:required");
         }
 
-        switch (type){
+        switch (type) {
             case "1":
-                ImportResult result= importErste(file);
-                if(!result.success()){
-                    return new ModelAndView("redirect:/import?error=file:"+result.getError());
+                ImportResult result = importErste(file);
+                if (!result.success()) {
+                    return new ModelAndView("redirect:/import?error=file:" + result.getError());
                 }
                 // TODO: numofresultot success eseten kiirni
-                return new ModelAndView("redirect:/import?success&rows="+result.getNumImported());
+                return new ModelAndView("redirect:/import?success&rows=" + result.getNumImported());
             case "2":
                 importMagnet(file);
                 return new ModelAndView("redirect:/import?success"); // TODO
@@ -60,17 +60,15 @@ public class WebController {
     }
 
     private ImportResult importErste(MultipartFile file) throws Exception {
-        if(file.getOriginalFilename().endsWith(".xml")){
+        if (file.getOriginalFilename().endsWith(".xml")) {
             // TODO: send the MultipartFile to the service, and then convert to file there if needed
             File convFile = new File(file.getOriginalFilename());
             file.transferTo(convFile);
-            xmlImportService.importErsteDataFile(convFile,"???");
+            xmlImportService.importErsteDataFile(convFile, "???");
             return ImportResult.error("TODO");
-        }
-        else if(file.getOriginalFilename().endsWith(".pdf")){
+        } else if (file.getOriginalFilename().endsWith(".pdf")) {
             return pdfImportService.importErsteDataFile(file);
-        }
-        else{
+        } else {
             return ImportResult.error("invalidext");
         }
     }

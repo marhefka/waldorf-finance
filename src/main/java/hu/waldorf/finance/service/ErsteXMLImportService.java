@@ -34,7 +34,7 @@ public class ErsteXMLImportService {
 
         XPathFactory xPathfactory = XPathFactory.newInstance();
 
-        XPathExpression expr = xPathfactory.newXPath().compile("//Worksheet[@Name='"+ szamlaszam +"']//Row[position()>1]");
+        XPathExpression expr = xPathfactory.newXPath().compile("//Worksheet[@Name='" + szamlaszam + "']//Row[position()>1]");
         NodeList nodeList = (NodeList) expr.evaluate(document, XPathConstants.NODESET);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");

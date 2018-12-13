@@ -73,7 +73,7 @@ public class Hint {
         }
 
         if (befizetes.getBefizetoNev().startsWith("PSZICHO")) {
-            confidencePoint=confidencePoint;
+            confidencePoint = confidencePoint;
         }
         String befizetoNev = befizetes.getBefizetoNev().toLowerCase(locale);
         befizetoNev = befizetoNev.replace("dr ", "");

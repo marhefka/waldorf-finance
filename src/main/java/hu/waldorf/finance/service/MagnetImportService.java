@@ -86,7 +86,7 @@ public class MagnetImportService {
 
                         int osszeg = (int) d;
 
-                        if (d-osszeg >= 0.01) {
+                        if (d - osszeg >= 0.01) {
                             throw new RuntimeException("Filler ertek?: " + value);
                         }
 
