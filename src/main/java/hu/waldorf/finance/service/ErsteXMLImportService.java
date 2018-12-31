@@ -5,6 +5,10 @@ import hu.waldorf.finance.model.BefizetesRepository;
 import hu.waldorf.finance.model.FeldolgozasStatusza;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -15,7 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,14 +27,16 @@ import java.util.Date;
 @Transactional
 public class ErsteXMLImportService {
     @Autowired
+    private PlatformTransactionManager transactionManager;
+    @Autowired
     private BefizetesRepository befizetesRepository;
 
-    public void importErsteDataFile(File file, String szamlaszam) throws Exception {
+    public ImportResult importErsteDataFile(byte[] data, String fileName, String szamlaszam) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         factory.setIgnoringElementContentWhitespace(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(file);
+        Document document = builder.parse(new ByteArrayInputStream(data));
 
         XPathFactory xPathfactory = XPathFactory.newInstance();
 
@@ -41,6 +47,10 @@ public class ErsteXMLImportService {
 
         Date now = new Date();
 
+        TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+
+        int success=0;
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node row = nodeList.item(i);
 
@@ -61,7 +71,7 @@ public class ErsteXMLImportService {
             Date dKonyvelesDatuma = simpleDateFormat.parse(konyvelesDatuma);
 
             Befizetes befizetes = new Befizetes();
-            befizetes.setImportForras("Erste/" + file.getName());
+            befizetes.setImportForras("Erste/" + fileName);
             befizetes.setImportIdopont(now);
             befizetes.setKonyvelesiNap(dKonyvelesDatuma);
             befizetes.setBefizetoNev(partnerNeve);
@@ -70,6 +80,10 @@ public class ErsteXMLImportService {
             befizetes.setKozlemeny(kozlemeny);
             befizetes.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
             befizetesRepository.save(befizetes);
+            success++;
         }
+
+        transactionManager.commit(transactionStatus);
+        return ImportResult.success(success);
     }
 }

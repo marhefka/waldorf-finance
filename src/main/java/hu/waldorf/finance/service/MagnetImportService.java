@@ -19,7 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,12 +32,12 @@ public class MagnetImportService {
     @Autowired
     private BefizetesRepository befizetesRepository;
 
-    public void importMagnetDataFile(File file) throws Exception {
+    public ImportResult importMagnetDataFile(byte[] data, String fileName) throws Exception {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(true);
         factory.setIgnoringElementContentWhitespace(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(file);
+        Document document = builder.parse(new ByteArrayInputStream(data));
 
         XPathFactory xPathfactory = XPathFactory.newInstance();
 
@@ -51,6 +51,7 @@ public class MagnetImportService {
         TransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
         TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
 
+        int success=0;
         for (int i = 0; i < nodeList.getLength(); i++) {
             boolean feldolgozando = true;
             Node row = nodeList.item(i);
@@ -69,7 +70,7 @@ public class MagnetImportService {
                 String value = childNode.getTextContent();
                 switch (childNode.getNodeName()) {
                     case "Tranzakcioszam":
-                        befizetes.setImportForras("Magnet/" + file.getName() + "/" + value);
+                        befizetes.setImportForras("Magnet/" + fileName + "/" + value);
                         break;
                     case "Ellenpartner":
                         befizetes.setBefizetoNev(value);
@@ -110,10 +111,12 @@ public class MagnetImportService {
 
             if (feldolgozando) {
                 befizetesRepository.save(befizetes);
+                success++;
             }
         }
 
         transactionManager.commit(transactionStatus);
+        return ImportResult.success(success);
     }
 
 }

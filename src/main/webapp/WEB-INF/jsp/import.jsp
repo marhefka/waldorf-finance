@@ -4,7 +4,7 @@
     <%@include file="../includes/head.jsp" %>
     <link href="/common.css" rel="stylesheet">
     <script type="text/javascript" src="/Common.js"></script>
-    <script type="text/javascript" src="/ImportPage.js?v=1"></script>
+    <script type="text/javascript" src="/ImportPage.js"></script>
 </head>
 
 <body>
@@ -43,6 +43,7 @@
                     <div class="input-group form-group">
                         <button type="submit" class="btn btn-success">Success</button>
                     </div>
+                    <div id="success-alert" class="alert alert-success" style="display:none;">Sikeresen beimportálva {0} befizetés</div>
                 </form>
             </div>
         </div>

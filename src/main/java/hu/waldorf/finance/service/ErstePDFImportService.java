@@ -7,7 +7,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.text.ParseException;
@@ -17,28 +16,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 @Service
 @Transactional
 public class ErstePDFImportService {
-    private static final String STARTS_WITH_DATE_REGEX = "^\\d{4}\\.(((0)[0-9])|((1)[0-2]))\\.([0-2][0-9]|(3)[0-1])\\..*$"; // unused?
-    private static final String DATE_REGEX = "^\\d{4}\\.(((0)[0-9])|((1)[0-2]))\\.([0-2][0-9]|(3)[0-1])\\.*";
-    private static final Pattern DATE_REGEX_PATTERN = Pattern.compile(DATE_REGEX);          // unused?
-    private static final String NAME_REGEX = "^[a-zA-ZáéűúőóüöíÁÉŰÚŐÓÜÖÍ|\\-|\\s]*";
-    private static final Pattern NAME_REGEX_PATTERN = Pattern.compile(NAME_REGEX);          // unused?
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd.");
-    private static final List<String> CONTENT_COMING_INDICATOR_LINES = Arrays.asList(           // unused?
-            "Tranzakció típusa 00100 BEJÖVŐ GIRO ÁTUTALÁS",
-            "Tranzakció típusa BANKON BELÜLI ÁTUT. JÓVÁÍRÁSA",
-            "Tranzakció típusa IB UTALÁS BANKON KÍVÜL"
-    );
 
     @Autowired
     private BefizetesRepository befizetesRepository;
 
-    public ImportResult importErsteDataFile(MultipartFile file) throws Exception {
-        PDDocument document = PDDocument.load(file.getBytes());
+    public ImportResult importErsteDataFile(byte[] data, String fileName) throws Exception {
+        PDDocument document = PDDocument.load(data);
         PDFTextStripper pdfStripper = new PDFTextStripper();
         String text = pdfStripper.getText(document);
         document.close();
@@ -59,7 +47,7 @@ public class ErstePDFImportService {
         }
 
         String[] toBeParsed = Arrays.copyOfRange(lines, startLine - 1, lines.length);
-        List<Befizetes> befizetesek = process(toBeParsed, file.getOriginalFilename());
+        List<Befizetes> befizetesek = process(toBeParsed, fileName);
         befizetesek.forEach(befizetes -> befizetesRepository.save(befizetes));
         return ImportResult.success(befizetesek.size());
     }

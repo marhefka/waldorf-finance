@@ -15,6 +15,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.io.File;
+import java.nio.file.Files;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,9 +44,12 @@ public class FullImportTest {
 
         szerzodesImportService.importSzerzodesek(lookupTestResource("tamogatok.csv"));
 
-        ersteImportService.importErsteDataFile(lookupTestResource("Erste10.xml"), "11994002-02405425-00000000");
-        magnetImportService.importMagnetDataFile(lookupTestResource("haviKivonat_201809_1620010611564492.xml"));
-        magnetImportService.importMagnetDataFile(lookupTestResource("haviKivonat_201810_1620010611564492.xml"));
+        File ersteXML=lookupTestResource("Erste10.xml");
+        File magnetXML1=lookupTestResource("haviKivonat_201809_1620010611564492.xml");
+        File magnetXML2=lookupTestResource("haviKivonat_201810_1620010611564492.xml");
+        ersteImportService.importErsteDataFile(Files.readAllBytes(ersteXML.toPath()),"Erste10.xml", "11994002-02405425-00000000");
+        magnetImportService.importMagnetDataFile(Files.readAllBytes(magnetXML1.toPath()),"haviKivonat_201809_1620010611564492.xml");
+        magnetImportService.importMagnetDataFile(Files.readAllBytes(magnetXML2.toPath()),"haviKivonat_201810_1620010611564492.xml");
 
         transactionManager.commit(transactionStatus);
     }
