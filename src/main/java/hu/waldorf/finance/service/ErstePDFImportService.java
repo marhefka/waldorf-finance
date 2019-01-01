@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -58,26 +57,24 @@ public class ErstePDFImportService {
         Befizetes befizetesBeingParsed = null;
 
         for (String line : toBeParsed) {
-            if (line.startsWith("Megbízó neve")) {
-                if (befizetesBeingParsed != null) {
-                    parsed.add(befizetesBeingParsed);
-                }
-
+            if (line.startsWith("Megbízó neve")) { //  csak jovairas erdekel minket, ahol kedvezmenyezett van, az nem
                 befizetesBeingParsed = new Befizetes();
                 befizetesBeingParsed.setImportForras("Erste/" + originalFilename);
                 befizetesBeingParsed.setImportIdopont(new Date());
                 befizetesBeingParsed.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
                 befizetesBeingParsed.setBefizetoNev(line.replace("Megbízó neve", "").trim());
-            } else if (line.startsWith("Megbízó számlaszáma")) {
-                Objects.requireNonNull(befizetesBeingParsed).setBefizetoSzamlaszam(line.replace("Megbízó számlaszáma", "").trim());
-            } else if (line.startsWith("Könyvelés dátuma")) {
-                Objects.requireNonNull(befizetesBeingParsed).setKonyvelesiNap(SIMPLE_DATE_FORMAT.parse(line.replace("Könyvelés dátuma", "").trim()));
-            } else if (line.startsWith("Közlemény")) {
-                Objects.requireNonNull(befizetesBeingParsed).setKozlemeny(line.replace("Közlemény", "").trim());
-            } else if (line.startsWith("Jóváírás összege")) {
+            } else if (befizetesBeingParsed!=null && line.startsWith("Megbízó számlaszáma")) {
+                befizetesBeingParsed.setBefizetoSzamlaszam(line.replace("Megbízó számlaszáma", "").trim());
+            } else if (befizetesBeingParsed!=null && line.startsWith("Könyvelés dátuma")) {
+                befizetesBeingParsed.setKonyvelesiNap(SIMPLE_DATE_FORMAT.parse(line.replace("Könyvelés dátuma", "").trim()));
+            } else if (befizetesBeingParsed!=null && line.startsWith("Közlemény")) {
+                befizetesBeingParsed.setKozlemeny(line.replace("Közlemény", "").trim());
+            } else if (befizetesBeingParsed!=null && line.startsWith("Jóváírás összege")) {
                 String moneyString = line.replace("Jóváírás összege", "").replace("HUF", "").replace(",", ".").replace(" ", "").trim();
                 int osszeg = Float.valueOf(moneyString).intValue();
-                Objects.requireNonNull(befizetesBeingParsed).setOsszeg(osszeg);
+                befizetesBeingParsed.setOsszeg(osszeg);
+                parsed.add(befizetesBeingParsed);
+                befizetesBeingParsed=null;
             }
         }
 
