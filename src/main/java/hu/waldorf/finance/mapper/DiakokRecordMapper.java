@@ -1,4 +1,4 @@
-package hu.waldorf.finance.repository;
+package hu.waldorf.finance.mapper;
 
 import hu.waldorf.finance.generated.Tables;
 import hu.waldorf.finance.generated.tables.records.DiakokRecord;

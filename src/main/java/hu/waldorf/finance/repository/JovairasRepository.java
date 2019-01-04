@@ -6,4 +6,6 @@ public interface JovairasRepository {
     void deleteAll();
 
     void insert(Jovairas jovairas);
+
+    void save(Jovairas jovairas);
 }

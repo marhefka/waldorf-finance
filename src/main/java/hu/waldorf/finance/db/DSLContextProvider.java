@@ -1,4 +1,4 @@
-package hu.waldorf.finance.repository;
+package hu.waldorf.finance.db;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;

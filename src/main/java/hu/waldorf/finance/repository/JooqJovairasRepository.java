@@ -40,4 +40,9 @@ public class JooqJovairasRepository implements JovairasRepository {
 
         jovairas.setId(dslContext.lastID().intValueExact());
     }
+
+    @Override
+    public void save(Jovairas jovairas) {
+        throw new UnsupportedOperationException();
+    }
 }

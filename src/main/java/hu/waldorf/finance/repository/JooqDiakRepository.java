@@ -2,6 +2,7 @@ package hu.waldorf.finance.repository;
 
 import com.google.inject.Inject;
 import hu.waldorf.finance.generated.Tables;
+import hu.waldorf.finance.mapper.DiakokRecordMapper;
 import hu.waldorf.finance.model.Diak;
 import org.jooq.DSLContext;
 

@@ -2,7 +2,9 @@ package hu.waldorf.finance.repository;
 
 import com.google.inject.Inject;
 import hu.waldorf.finance.generated.Tables;
+import hu.waldorf.finance.mapper.BefizetesekRecordMapper;
 import hu.waldorf.finance.model.Befizetes;
+import hu.waldorf.finance.model.FeldolgozasStatusza;
 import org.jooq.DSLContext;
 
 import java.sql.Date;
@@ -11,15 +13,22 @@ import java.util.List;
 
 public class JooqBefizetesRepository implements BefizetesRepository {
     private final DSLContext dslContext;
+    private final BefizetesekRecordMapper befizetesekRecordMapper;
 
     @Inject
-    public JooqBefizetesRepository(DSLContext dslContext) {
+    public JooqBefizetesRepository(DSLContext dslContext, BefizetesekRecordMapper befizetesekRecordMapper) {
         this.dslContext = dslContext;
+        this.befizetesekRecordMapper = befizetesekRecordMapper;
     }
 
     @Override
     public List<Befizetes> findNemFeldolgozottak() {
-        throw new UnsupportedOperationException();
+        return dslContext.select()
+                .from(Tables.BEFIZETESEK)
+                .where(Tables.BEFIZETESEK.STATUSZ.eq(FeldolgozasStatusza.BEIMPORTALVA.name()))
+                .orderBy(Tables.BEFIZETESEK.ID)
+                .fetch()
+                .map(befizetesekRecordMapper);
     }
 
     @Override
@@ -49,5 +58,14 @@ public class JooqBefizetesRepository implements BefizetesRepository {
                 .execute();
 
         befizetes.setId(dslContext.lastID().intValueExact());
+    }
+
+    @Override
+    public Befizetes findById(int befizetesId) {
+        return dslContext.select()
+                .from(Tables.BEFIZETESEK)
+                .where(Tables.BEFIZETESEK.ID.eq(befizetesId))
+                .fetchOne()
+                .map(befizetesekRecordMapper);
     }
 }
