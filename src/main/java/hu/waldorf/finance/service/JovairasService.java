@@ -35,19 +35,19 @@ public class JovairasService {
     public void ignoreBefizetes(int befizetesId) {
         Befizetes befizetes = befizetesRepository.findById(befizetesId);
         befizetes.setStatusz(FeldolgozasStatusza.FIGYELMEN_KIVUL_HAGYVA);
-        befizetesRepository.save(befizetes);
+        befizetesRepository.store(befizetes);
     }
 
     public void postponeBefizetes(int befizetesId) {
         Befizetes befizetes = befizetesRepository.findById(befizetesId);
         befizetes.setStatusz(FeldolgozasStatusza.KESOBBRE_HALASZTVA);
-        befizetesRepository.save(befizetes);
+        befizetesRepository.store(befizetes);
     }
 
     public void jovairBefizetest(int szerzodesId, TetelTipus tipus, int befizetesId) {
         Befizetes befizetes = befizetesRepository.findById(befizetesId);
         befizetes.setStatusz(FeldolgozasStatusza.KESZ);
-        befizetesRepository.save(befizetes);
+        befizetesRepository.store(befizetes);
 
         Jovairas jovairas = new Jovairas();
         jovairas.setSzerzodesId(szerzodesId);
@@ -56,7 +56,7 @@ public class JovairasService {
         jovairas.setOsszeg(befizetes.getOsszeg());
         jovairas.setBefizetesId(befizetesId);
         jovairas.setKonyvelesiNap(befizetes.getKonyvelesiNap());
-        jovairasRepository.save(jovairas);
+        jovairasRepository.store(jovairas);
     }
 
     public void terhel(int ev, int honap) {
@@ -73,7 +73,7 @@ public class JovairasService {
             jovairas.setOsszeg(-szerzodes.getMukodesiKoltsegTamogatas());
             jovairas.setBefizetesId(null);
             jovairas.setKonyvelesiNap(dateDay);
-            jovairasRepository.save(jovairas);
+            jovairasRepository.store(jovairas);
         }
 
         for (Szerzodes szerzodes : szerzodesek) {
@@ -84,7 +84,7 @@ public class JovairasService {
             jovairas.setOsszeg(-szerzodes.getEpitesiHozzajarulas());
             jovairas.setBefizetesId(null);
             jovairas.setKonyvelesiNap(dateDay);
-            jovairasRepository.save(jovairas);
+            jovairasRepository.store(jovairas);
         }
     }
 }

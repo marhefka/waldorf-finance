@@ -9,7 +9,7 @@ public interface BefizetesRepository {
 
     void deleteAll();
 
-    void save(Befizetes befizetes);
+    void store(Befizetes befizetes);
 
     Befizetes findById(int befizetesId);
 }

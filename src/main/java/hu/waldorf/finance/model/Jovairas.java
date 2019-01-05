@@ -3,39 +3,22 @@ package hu.waldorf.finance.model;
 import java.util.Date;
 
 public class Jovairas {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "ID")
-    private int id;
-
-//    @Column(name = "SZERZODES_ID")
+    private Integer id;
     private int szerzodesId;
-
-//    @Column(name = "MEGNEVEZES")
     private String megnevezes;
-
-//    @Column(name = "tipus")
-//    @Enumerated(EnumType.STRING)
     private TetelTipus tipus;
-
-//    @Column(name = "OSSZEG")
     private int osszeg;
-
-//    @Column(name = "BEFIZETES_ID")
     private Integer befizetesId;
-
-//    @Column(name = "KONYVELESI_NAP")
-//    @Temporal(TemporalType.DATE)
     private Date konyvelesiNap;
 
     public Jovairas() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

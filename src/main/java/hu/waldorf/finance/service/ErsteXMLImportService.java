@@ -70,7 +70,7 @@ public class ErsteXMLImportService {
             befizetes.setOsszeg(osszeg);
             befizetes.setKozlemeny(kozlemeny);
             befizetes.setStatusz(FeldolgozasStatusza.BEIMPORTALVA);
-            befizetesRepository.save(befizetes);
+            befizetesRepository.store(befizetes);
             success++;
         }
 

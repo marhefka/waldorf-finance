@@ -139,14 +139,14 @@ public class SzerzodesImportService {
 
             Csalad csalad = new Csalad();
             csalad.setId(csaladId);
-            csaladRepository.save(csalad);
+            csaladRepository.store(csalad);
 
             for (int i = 0; i < gyerekekSzama; i++) {
                 Diak diak = new Diak();
                 diak.setNev(gyerekekNeve[i]);
                 diak.setOsztaly(gyerekekEvfolyama[i]);
                 diak.setCsaladId(csalad.getId());
-                diakRepository.save(diak);
+                diakRepository.store(diak);
             }
         } else {
             List<Diak> diakokACsaladban = diakRepository.findByCsaladId(csaladId);
@@ -167,7 +167,7 @@ public class SzerzodesImportService {
         szerzodes.setCsaladId(csaladId);
         szerzodes.setMukodesiKoltsegTamogatasInduloEgyenleg(mukodesiTamogatasNyitoEgyenleg);
         szerzodes.setEpitesiHozzajarulasInduloEgyenleg(epitesiHozzajarulasNyitoEgyenleg);
-        szerzodesRepository.save(szerzodes);
+        szerzodesRepository.store(szerzodes);
 
         LocalDate date2018Sept1 = LocalDate.of(2018, 9, 1);
         Date date = Date.from(date2018Sept1.atStartOfDay().toInstant(ZoneOffset.UTC));
@@ -179,7 +179,7 @@ public class SzerzodesImportService {
         jovairas.setOsszeg(mukodesiTamogatasNyitoEgyenleg);
         jovairas.setBefizetesId(null);
         jovairas.setKonyvelesiNap(date);
-        jovairasRepository.insert(jovairas);
+        jovairasRepository.store(jovairas);
 
         Jovairas jovairas2 = new Jovairas();
         jovairas2.setSzerzodesId(szerzodes.getId());
@@ -188,6 +188,6 @@ public class SzerzodesImportService {
         jovairas2.setOsszeg(epitesiHozzajarulasNyitoEgyenleg);
         jovairas2.setBefizetesId(null);
         jovairas2.setKonyvelesiNap(date);
-        jovairasRepository.insert(jovairas2);
+        jovairasRepository.store(jovairas2);
     }
 }

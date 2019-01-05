@@ -36,9 +36,13 @@ public class JooqBefizetesRepository implements BefizetesRepository {
     }
 
     @Override
-    public void save(Befizetes befizetes) {
+    public void store(Befizetes befizetes) {
         BefizetesekRecord record = befizetesekRecordMapper.unmap(befizetes);
         record.store();
+
+        if (befizetes.getId() == null) {
+            befizetes.setId(dslContext.lastID().intValueExact());
+        }
     }
 
     @Override

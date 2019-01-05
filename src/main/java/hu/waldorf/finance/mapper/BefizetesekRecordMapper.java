@@ -50,7 +50,8 @@ public class BefizetesekRecordMapper implements RecordMapper<Record, Befizetes>,
         record.setOsszeg(source.getOsszeg());
         record.setKozlemeny(source.getKozlemeny());
         record.setStatusz(source.getStatusz().name());
-        return record;
 
+        record.changed(Tables.BEFIZETESEK.ID, false);
+        return record;
     }
 }

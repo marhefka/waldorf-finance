@@ -7,7 +7,7 @@ import java.util.List;
 public interface SzerzodesRepository {
     void deleteAll();
 
-    void save(Szerzodes szerzodes);
+    void store(Szerzodes szerzodes);
 
     List<Szerzodes> findAll();
 }

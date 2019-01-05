@@ -100,7 +100,7 @@ public class MagnetImportService {
             }
 
             if (feldolgozando) {
-                befizetesRepository.save(befizetes);
+                befizetesRepository.store(befizetes);
                 success++;
             }
         }

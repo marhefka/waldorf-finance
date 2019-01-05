@@ -1,18 +1,16 @@
 package hu.waldorf.finance.model;
 
 public class Csalad {
-//    @Id
-//    @Column(name = "ID")
-    private int id;
+    private Integer id;
 
     public Csalad() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

@@ -1,37 +1,22 @@
 package hu.waldorf.finance.model;
 
 public class Szerzodes {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "ID")
-    private int id;
-
-//    @Column(name = "TAMOGATO")
+    private Integer id;
     private String tamogato;
-
-//    @Column(name = "MUKODESI_KOLTSEG_TAMOGAS")
     private int mukodesiKoltsegTamogatas;
-
-//    @Column(name = "EPITESI_HOZZAJARULAS")
     private int epitesiHozzajarulas;
-
-//    @Column(name = "CSALAD_ID")
     private int csaladId;
-
-//    @Column(name = "MUKODESI_KOLTSEG_TAMOGAS_INDULO_EGYENLEG")
     private int mukodesiKoltsegTamogatasInduloEgyenleg;
-
-//    @Column(name = "EPITESI_HOZZAJARULAS_INDULO_EGYENLEG")
     private int epitesiHozzajarulasInduloEgyenleg;
 
     public Szerzodes() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

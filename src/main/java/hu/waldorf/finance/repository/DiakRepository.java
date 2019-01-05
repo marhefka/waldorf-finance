@@ -9,5 +9,5 @@ public interface DiakRepository {
 
     void deleteAll();
 
-    void save(Diak diak);
+    void store(Diak diak);
 }
