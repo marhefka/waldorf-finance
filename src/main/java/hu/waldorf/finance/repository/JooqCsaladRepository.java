@@ -15,7 +15,7 @@ public class JooqCsaladRepository implements CsaladRepository {
 
     @Override
     public void deleteAll() {
-        dslContext.deleteFrom(Tables.CSALADOK);
+        dslContext.deleteFrom(Tables.CSALADOK).execute();
     }
 
     @Override

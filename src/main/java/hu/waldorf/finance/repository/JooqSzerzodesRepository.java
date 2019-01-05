@@ -20,7 +20,7 @@ public class JooqSzerzodesRepository implements SzerzodesRepository {
 
     @Override
     public void deleteAll() {
-        dslContext.deleteFrom(Tables.SZERZODESEK);
+        dslContext.deleteFrom(Tables.SZERZODESEK).execute();
     }
 
     @Override

@@ -2,13 +2,12 @@ package hu.waldorf.finance.repository;
 
 import com.google.inject.Inject;
 import hu.waldorf.finance.generated.Tables;
+import hu.waldorf.finance.generated.tables.records.BefizetesekRecord;
 import hu.waldorf.finance.mapper.BefizetesekRecordMapper;
 import hu.waldorf.finance.model.Befizetes;
 import hu.waldorf.finance.model.FeldolgozasStatusza;
 import org.jooq.DSLContext;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
 
 public class JooqBefizetesRepository implements BefizetesRepository {
@@ -33,39 +32,18 @@ public class JooqBefizetesRepository implements BefizetesRepository {
 
     @Override
     public void deleteAll() {
-        dslContext.deleteFrom(Tables.BEFIZETESEK);
+        dslContext.deleteFrom(Tables.BEFIZETESEK).execute();
     }
 
     @Override
     public void save(Befizetes befizetes) {
-        dslContext.insertInto(Tables.BEFIZETESEK)
-                .columns(Tables.BEFIZETESEK.IMPORT_FORRAS,
-                        Tables.BEFIZETESEK.IMPORT_IDOPONT,
-                        Tables.BEFIZETESEK.KONYVELESI_NAP,
-                        Tables.BEFIZETESEK.BEFIZETO_NEV,
-                        Tables.BEFIZETESEK.BEFIZETO_SZAMLASZAM,
-                        Tables.BEFIZETESEK.OSSZEG,
-                        Tables.BEFIZETESEK.KOZLEMENY,
-                        Tables.BEFIZETESEK.STATUSZ)
-                .values(befizetes.getImportForras(),
-                        new Timestamp(befizetes.getImportIdopont().getTime()),
-                        new Date(befizetes.getKonyvelesiNap().getTime()),
-                        befizetes.getBefizetoNev(),
-                        befizetes.getBefizetoSzamlaszam(),
-                        befizetes.getOsszeg(),
-                        befizetes.getKozlemeny(),
-                        befizetes.getStatusz().name())
-                .execute();
-
-        befizetes.setId(dslContext.lastID().intValueExact());
+        BefizetesekRecord record = befizetesekRecordMapper.unmap(befizetes);
+        record.store();
     }
 
     @Override
     public Befizetes findById(int befizetesId) {
-        return dslContext.select()
-                .from(Tables.BEFIZETESEK)
-                .where(Tables.BEFIZETESEK.ID.eq(befizetesId))
-                .fetchOne()
+        return dslContext.fetchOne(Tables.BEFIZETESEK, Tables.BEFIZETESEK.ID.eq(befizetesId))
                 .map(befizetesekRecordMapper);
     }
 }

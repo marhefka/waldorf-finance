@@ -30,7 +30,7 @@ public class JooqDiakRepository implements DiakRepository {
 
     @Override
     public void deleteAll() {
-        dslContext.deleteFrom(Tables.DIAKOK);
+        dslContext.deleteFrom(Tables.DIAKOK).execute();
     }
 
     @Override

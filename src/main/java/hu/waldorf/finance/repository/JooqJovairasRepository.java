@@ -18,7 +18,7 @@ public class JooqJovairasRepository implements JovairasRepository {
 
     @Override
     public void deleteAll() {
-        dslContext.deleteFrom(JOVAIRAS);
+        dslContext.deleteFrom(JOVAIRAS).execute();
     }
 
     @Override

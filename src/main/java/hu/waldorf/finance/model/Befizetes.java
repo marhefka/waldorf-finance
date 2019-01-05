@@ -5,46 +5,24 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.util.Date;
 
 public class Befizetes {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "ID")
-    private int id;
-
-//    @Column(name = "IMPORT_FORRAS")
+    private Integer id;
     private String importForras;
-
-//    @Column(name = "IMPORT_IDOPONT")
-//    @Temporal(TemporalType.TIMESTAMP)
     private Date importIdopont;
-
-//    @Column(name = "KONYVELESI_NAP")
-//    @Temporal(TemporalType.DATE)
     private Date konyvelesiNap;
-
-//    @Column(name = "BEFIZETO_NEV")
     private String befizetoNev;
-
-//    @Column(name = "BEFIZETO_SZAMLASZAM")
     private String befizetoSzamlaszam;
-
-//    @Column(name = "OSSZEG")
     private int osszeg;
-
-//    @Column(name = "KOZLEMENY")
     private String kozlemeny;
-
-//    @Column(name = "STATUSZ")
-//    @Enumerated(EnumType.STRING)
     private FeldolgozasStatusza statusz;
 
     public Befizetes() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

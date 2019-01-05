@@ -15,7 +15,11 @@ import hu.waldorf.finance.repository.JooqJovairasRepository;
 import hu.waldorf.finance.repository.JooqSzerzodesRepository;
 import hu.waldorf.finance.repository.JovairasRepository;
 import hu.waldorf.finance.repository.SzerzodesRepository;
+import hu.waldorf.finance.service.DbDeleteService;
+import hu.waldorf.finance.service.ErsteXMLImportService;
 import hu.waldorf.finance.service.JovairasService;
+import hu.waldorf.finance.service.MagnetImportService;
+import hu.waldorf.finance.service.SzerzodesImportService;
 import org.jooq.DSLContext;
 
 import java.sql.Connection;
@@ -33,5 +37,9 @@ public class BasicModule extends AbstractModule {
         bind(SzerzodesRepository.class).to(JooqSzerzodesRepository.class);
 
         bindInterceptor(Matchers.only(JovairasService.class), Matchers.any(), new TransactionSupporter());
+        bindInterceptor(Matchers.only(DbDeleteService.class), Matchers.any(), new TransactionSupporter());
+        bindInterceptor(Matchers.only(SzerzodesImportService.class), Matchers.any(), new TransactionSupporter());
+        bindInterceptor(Matchers.only(ErsteXMLImportService.class), Matchers.any(), new TransactionSupporter());
+        bindInterceptor(Matchers.only(MagnetImportService.class), Matchers.any(), new TransactionSupporter());
     }
 }
