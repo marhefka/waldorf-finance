@@ -1,14 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="hu.waldorf.finance.screens.MainScreen"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="hu.waldorf.finance.screens.befizetesek_jovairasa.BefizetesekJovairasaScreen"
+            prefHeight="400.0" prefWidth="1000.0">
 
     <VBox>
-        <Text text="Befizetes jovairasa"/>
+        <Button text="+" onAction="#onRefresh"/>
+
+        <TableView fx:id="tableView" prefWidth="900">
+            <columns>
+                <TableColumn text="Forrás">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="forras"/>
+                    </cellValueFactory>
+                </TableColumn>
+
+                <TableColumn fx:id="beerkezesIdopontja" text="Beeérkezes időpontja" prefWidth="150">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="beerkezesIdopontja"/>
+                    </cellValueFactory>
+                </TableColumn>
+
+                <TableColumn text="Befizető">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="befizeto"/>
+                    </cellValueFactory>
+                </TableColumn>
+
+                <TableColumn text="Összeg">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="osszeg"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+
+            <sortOrder>
+                <fx:reference source="beerkezesIdopontja"/>
+            </sortOrder>
+        </TableView>
     </VBox>
 </AnchorPane>

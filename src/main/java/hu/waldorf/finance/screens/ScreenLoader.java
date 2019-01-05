@@ -2,6 +2,8 @@ package hu.waldorf.finance.screens;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import hu.waldorf.finance.screens.befizetesek_jovairasa.BefizetesekJovairasaScreen;
+import hu.waldorf.finance.screens.main.MainScreen;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -45,6 +47,8 @@ public class ScreenLoader {
             stage.setTitle("Sample Application");
             Scene scene = new Scene(root);
             stage.setScene(scene);
+
+            screen.init();
             stage.show();
         } catch (Exception ex) {
             throw new RuntimeException(ex);

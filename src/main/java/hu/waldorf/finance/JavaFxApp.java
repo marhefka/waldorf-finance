@@ -2,8 +2,8 @@ package hu.waldorf.finance;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import hu.waldorf.finance.screens.MainScreen;
 import hu.waldorf.finance.screens.ScreenLoader;
+import hu.waldorf.finance.screens.main.MainScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
